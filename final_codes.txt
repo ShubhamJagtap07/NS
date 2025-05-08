@@ -1,0 +1,192 @@
+// ---------- EXPERIMENT 1: Password Menu System ----------
+#include <iostream>
+#include <string>
+using namespace std;
+
+string stored_password = "mypassword";
+
+void first_task() {
+    string user_pass;
+    cout << "Enter Password: ";
+    cin >> user_pass;
+    if (user_pass == stored_password) {
+        cout << "Correct Password" << endl;
+    } else {
+        cout << "Incorrect Password" << endl;
+    }
+}
+
+void second_task() {
+    string password;
+    cout << "Enter Hidden Password: ";
+    cin >> password; // No real hiding in basic C++, but simulating
+    cout << "Input received: ";
+    for (int i = 0; i < password.length(); i++) cout << '*';
+    cout << endl;
+}
+
+void third_task() {
+    string pass_plain;
+    cout << "Enter Password: ";
+    cin >> pass_plain;
+    cout << "Password Entered: " << pass_plain << endl;
+    if (pass_plain.length() < 8) {
+        cout << "Warning: Password should be at least 8 characters!" << endl;
+    }
+}
+
+void menu() {
+    cout << "\n--- Password Menu ---\n";
+    cout << "1. Verify Password\n";
+    cout << "2. Hidden Password Input\n";
+    cout << "3. Show Entered Password\n";
+    cout << "4. Exit\n";
+}
+
+int main() {
+    while (true) {
+        menu();
+        string choice;
+        cout << "Choose a task (1-4): ";
+        cin >> choice;
+        if (choice == "1") first_task();
+        else if (choice == "2") second_task();
+        else if (choice == "3") third_task();
+        else if (choice == "4") {
+            cout << "Goodbye!" << endl;
+            break;
+        } else {
+            cout << "Please enter a valid option (1-4)." << endl;
+        }
+    }
+    return 0;
+}
+
+// ---------- EXPERIMENT 2: Caesar Cipher ----------
+#include <iostream>
+#include <string>
+using namespace std;
+
+string caesar_encrypt(string text, int key) {
+    string result = "";
+    for (int i = 0; i < text.length(); i++) {
+        char ch = text[i];
+        if (ch >= 'a' && ch <= 'z') {
+            result += (ch - 'a' + key + 26) % 26 + 'a';
+        } else if (ch >= 'A' && ch <= 'Z') {
+            result += (ch - 'A' + key + 26) % 26 + 'A';
+        } else {
+            result += ch;
+        }
+    }
+    return result;
+}
+
+string caesar_decrypt(string text, int key) {
+    return caesar_encrypt(text, -key);
+}
+
+int main() {
+    string sentence = "NetworkSecurity";
+    int key = 4;
+
+    cout << "Original Text: " << sentence << endl;
+    string encrypted = caesar_encrypt(sentence, key);
+    cout << "Encrypted Text: " << encrypted << endl;
+    string decrypted = caesar_decrypt(encrypted, key);
+    cout << "Decrypted Text: " << decrypted << endl;
+    return 0;
+}
+
+// ---------- EXPERIMENT 3: Columnar Transposition Cipher ----------
+#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+void fill_grid(char grid[][100], string text, string key, int& rows) {
+    int key_len = key.length();
+    int len = text.length();
+    rows = (len + key_len - 1) / key_len + 1;
+
+    for (int i = 0; i < key_len; i++)
+        grid[0][i] = key[i];
+
+    int idx = 0;
+    for (int r = 1; r < rows; r++) {
+        for (int c = 0; c < key_len; c++) {
+            if (idx < len)
+                grid[r][c] = text[idx++];
+            else
+                grid[r][c] = ' ';
+        }
+    }
+}
+
+string encrypt(string text, string key) {
+    char grid[100][100];
+    int rows;
+    fill_grid(grid, text, key, rows);
+
+    cout << "\nGrid used for encryption:" << endl;
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < key.length(); c++) {
+            cout << grid[r][c] << ' ';
+        }
+        cout << endl;
+    }
+
+    string sorted_key = key;
+    sort(sorted_key.begin(), sorted_key.end());
+    string cipher = "";
+
+    for (int i = 0; i < key.length(); i++) {
+        int col = key.find(sorted_key[i]);
+        for (int r = 1; r < rows; r++) {
+            cipher += grid[r][col];
+        }
+    }
+    return cipher;
+}
+
+string decrypt(string cipher, string key) {
+    char grid[100][100];
+    int key_len = key.length();
+    int rows = (cipher.length() + key_len - 1) / key_len + 1;
+
+    for (int i = 0; i < key_len; i++)
+        grid[0][i] = key[i];
+
+    string sorted_key = key;
+    sort(sorted_key.begin(), sorted_key.end());
+    int idx = 0;
+    for (int i = 0; i < key_len; i++) {
+        int col = key.find(sorted_key[i]);
+        for (int r = 1; r < rows; r++) {
+            if (idx < cipher.length())
+                grid[r][col] = cipher[idx++];
+            else
+                grid[r][col] = ' ';
+        }
+    }
+
+    string plain = "";
+    for (int r = 1; r < rows; r++) {
+        for (int c = 0; c < key_len; c++) {
+            if (grid[r][c] != ' ')
+                plain += grid[r][c];
+        }
+    }
+    return plain;
+}
+
+int main() {
+    string key = "MEGADUCK";
+    string text = "Pleasetransferonemilliondollarstomyswissbankaccountsixtwotwofour";
+    cout << "Original Plaintext: " << text << endl;
+    string cipher = encrypt(text, key);
+    cout << "Ciphertext: " << cipher << endl;
+    string decrypted = decrypt(cipher, key);
+    cout << "Decrypted Text: " << decrypted << endl;
+    return 0;
+}
