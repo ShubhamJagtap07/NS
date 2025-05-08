@@ -1,0 +1,64 @@
+exp1 :-
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string entered, stored, verify;
+
+    cout << "Enter a new password to save: ";
+    getline(cin, entered);
+    cout << "Entered password: " << entered << endl;
+
+    // Storing the password in a variable (instead of a file)
+    stored = entered;
+
+    cout << "\nPassword saved." << endl;
+
+    cout << "Enter password to verify: ";
+    getline(cin, verify);
+
+    if (stored == verify) {
+        cout << "Correct password." << endl;
+    } else {
+        cout << "In-Correct password." << endl;
+    }
+
+    return 0;
+}
+
+
+part -2 :- 
+
+#include <iostream> 
+#include <conio.h> 
+using namespace std; 
+int main() { 
+string password; 
+char ch; 
+cout << "Enter password: "; 
+while (true) { 
+ch = getch(); 
+if (ch == '\r') 
+{ 
+break; 
+} 
+password += ch; 
+cout << '*'; 
+} 
+cout << "\nPassword entered (masked): **********\n"; 
+return 0; 
+} 
+
+part - 3: -
+
+#include <iostream> 
+using namespace std; 
+int main() { 
+string password; 
+cout << "Enter password: "; 
+cin >> password; 
+cout << "Password entered: " << password << endl; 
+return 0; 
+} 

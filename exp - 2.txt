@@ -1,0 +1,56 @@
+exp - 2:-
+
+ 
+#include <iostream>
+using namespace std;
+
+// Encrypt function
+string encrypt(string plain, int key) {
+    // Pad with 'x' if the length is not divisible by key
+    while (plain.length() % key != 0) {
+        plain += 'x';
+    }
+
+    string cipher = "";
+    int rows = plain.length() / key;
+
+    for (int j = 0; j < key; j++) {
+        for (int i = 0; i < rows; i++) {
+            cipher += plain[i * key + j];
+        }
+    }
+
+    return cipher;
+}
+
+// Decrypt function
+string decrypt(string cipher, int key) {
+    int rows = cipher.length() / key;
+    string plain = "";
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < key; j++) {
+            plain += cipher[j * rows + i];
+        }
+    }
+
+    return plain;
+}
+
+int main() {
+    string plain_text, cipher_text;
+    int key;
+
+    cout << "Enter plain text: ";
+    getline(cin, plain_text);
+
+    cout << "Enter key: ";
+    cin >> key;
+
+    cipher_text = encrypt(plain_text, key);
+    cout << "Encrypted text: " << cipher_text << endl;
+
+    cout << "Decrypted text: " << decrypt(cipher_text, key) << endl;
+
+    return 0;
+}
